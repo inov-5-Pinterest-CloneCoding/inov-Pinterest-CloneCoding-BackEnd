@@ -1,0 +1,21 @@
+cloud:
+  aws:
+    credentials:
+      access-key: 각자꺼
+      secret-key: 각자꺼
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: kh-myawsbucket
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+      max-request-size: 10MB
