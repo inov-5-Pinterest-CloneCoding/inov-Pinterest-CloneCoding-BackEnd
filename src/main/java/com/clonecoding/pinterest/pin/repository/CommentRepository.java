@@ -1,0 +1,9 @@
+package com.clonecoding.pinterest.pin.repository;
+
+import com.clonecoding.pinterest.pin.entity.Comment;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+}
