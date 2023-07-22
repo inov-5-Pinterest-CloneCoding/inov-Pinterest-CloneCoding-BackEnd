@@ -80,7 +80,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequest) ->
                 authorizeHttpRequest
                         .requestMatchers("/api/user/signup").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
         );
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
