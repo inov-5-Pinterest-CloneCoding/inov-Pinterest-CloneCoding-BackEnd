@@ -6,8 +6,10 @@ import com.clonecoding.pinterest.global.security.filter.JwtAuthorizationFilter;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsServiceImpl;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -79,7 +81,14 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequest) ->
                 authorizeHttpRequest
-                        .requestMatchers("/api/user/signup").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
+                        .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
+                        .requestMatchers("/api/user/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/api/file/**").permitAll()
                         .anyRequest().permitAll()
         );
 
