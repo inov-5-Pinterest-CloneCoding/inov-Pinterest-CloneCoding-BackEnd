@@ -1,11 +1,15 @@
 package com.clonecoding.pinterest.global.S3.controller;
 
+import com.clonecoding.pinterest.global.S3.dto.ImageResponseDto;
+import com.clonecoding.pinterest.global.S3.entity.Image;
 import com.clonecoding.pinterest.global.S3.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,14 @@ public class S3Controller {
     public ResponseEntity<List<String>> listAllObjects() {
         return new ResponseEntity<>(service.listAllObjects(), HttpStatus.OK);
     }
+
+    @Operation(summary="무한스크롤 지원을 위한 slice 구현")
+    @GetMapping("/images")
+    public Slice<Image> getImages(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "25") int size) {
+        return service.getImages(page, size);
+    }
+
+
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
