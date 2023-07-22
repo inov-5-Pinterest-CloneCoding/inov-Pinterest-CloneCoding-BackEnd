@@ -50,7 +50,7 @@ public class S3Service {
             result = s3Client.listObjectsV2(req);
             for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
                 String key = objectSummary.getKey();
-                String url = "{$myaws.bucket.url}"  + key;
+                String url = bucketUrl  + key;
                 urls.add(url);
             }
             String token = result.getNextContinuationToken();
