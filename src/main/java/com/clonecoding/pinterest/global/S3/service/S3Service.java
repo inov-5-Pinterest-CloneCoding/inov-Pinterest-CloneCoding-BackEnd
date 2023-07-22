@@ -3,6 +3,7 @@ package com.clonecoding.pinterest.global.S3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import com.clonecoding.pinterest.global.S3.dto.ImageResponseDto;
 import com.clonecoding.pinterest.global.S3.entity.Image;
 import com.clonecoding.pinterest.global.S3.repository.S3ImageRepository;
 import lombok.NonNull;
@@ -10,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +39,7 @@ public class S3Service {
 
     @Value("${myaws.bucket.url}")
     private String bucketUrl;
+
     public List<String> listAllObjects(){
 
         // s3에서 가져오기
@@ -46,14 +50,19 @@ public class S3Service {
             result = s3Client.listObjectsV2(req);
             for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
                 String key = objectSummary.getKey();
-                String url = bucketUrl  + key;
+                String url = "{$myaws.bucket.url}"  + key;
                 urls.add(url);
             }
             String token = result.getNextContinuationToken();
             req.setContinuationToken(token);
-        }while(result.isTruncated() == true);
+        }while(result.isTruncated());
         return urls;
     }
+
+    public Slice<Image> getImages(int page, int size){
+        return s3ImageRepository.findAll(PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "createdAt")));
+    }
+
 
     @Transactional
     public void saveUrlsToDatabase() {
