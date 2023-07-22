@@ -5,11 +5,13 @@ import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 import com.clonecoding.pinterest.global.S3.entity.Image;
 import com.clonecoding.pinterest.global.S3.repository.S3ImageRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -26,13 +28,17 @@ public class S3Service {
     @Value("${application.bucket.name}")
     private String bucketName;
 
-    @Autowired
+    @NonNull
     private S3ImageRepository s3ImageRepository;
 
-    @Autowired
+    @NonNull
     private AmazonS3 s3Client;
 
+    @Value("${myaws.bucket.url}")
+    private String bucketUrl;
     public List<String> listAllObjects(){
+
+        // s3에서 가져오기
         ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix("flowers/");
         ListObjectsV2Result result;
         List<String> urls = new ArrayList<>();
@@ -40,7 +46,7 @@ public class S3Service {
             result = s3Client.listObjectsV2(req);
             for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
                 String key = objectSummary.getKey();
-                String url = "https://" + "kh-myawsbucket" + ".s3." + "ap-northeast-2" + ".amazonaws.com/" + key;
+                String url = bucketUrl  + key;
                 urls.add(url);
             }
             String token = result.getNextContinuationToken();
@@ -48,6 +54,8 @@ public class S3Service {
         }while(result.isTruncated() == true);
         return urls;
     }
+
+    @Transactional
     public void saveUrlsToDatabase() {
         List<String> urls = listAllObjects();
 

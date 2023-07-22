@@ -25,13 +25,6 @@ public class S3Controller {
         return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
     }
 
-//    @Operation(summary = "DB생성용")
-//    @GetMapping("/save")
-//    public String saveUrlsToDatabase() {
-//        service.saveUrlsToDatabase();
-//        return "Saved all URLs to database";
-//    }
-
     @Operation(summary = "733개의 이미지 URL 전부 GET <-페이징 구현시 한 페이지당 x개 리턴될 예정 <- 무한스크롤 시 페이징 활용")
     @GetMapping("/page/all")
     public ResponseEntity<List<String>> listAllObjects() {
@@ -49,9 +42,4 @@ public class S3Controller {
                 .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
                 .body(resource);
     }
-
-//    @DeleteMapping("/delete/{fileName}")
-//    public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
-//        return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);
-//    }
 }

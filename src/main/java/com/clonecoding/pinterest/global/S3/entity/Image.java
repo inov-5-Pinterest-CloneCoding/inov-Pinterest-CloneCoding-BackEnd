@@ -39,26 +39,3 @@ public class Image extends TimeStamped {
         this.pinImageUrl = pinImageUrl;
     }
 }
-
-
-//    @OneToMany(mappedBy = "pin", fetch = LAZY, cascade = CascadeType.ALL)
-//    @OrderBy("createdDate desc ")
-//    private List<Comment> commentList;
-//
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments = new ArrayList<>();
-//
-//    @Column
-//    private int likeCount;
-//
-//    public void setLikeCount(int likeCount) {
-//        this.likeCount = likeCount;
-//    }
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PostLike> likes = new ArrayList<>();
-
-//    public void modifyPin(String pinImageUrl,String title, String content){
-//        this.pinImageUrl = pinImageUrl;
-//        this.title = title;
-//        this.content = content;
-//    }
