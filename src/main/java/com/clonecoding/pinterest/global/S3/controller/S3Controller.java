@@ -2,6 +2,8 @@ package com.clonecoding.pinterest.global.S3.controller;
 
 import com.clonecoding.pinterest.global.S3.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/file")
 @CrossOrigin(origins = "http://locallhost:3000", allowedHeaders = { "Authorization", "Cache-Control", "Content-Type" }, exposedHeaders = "Authorization")
+@RequiredArgsConstructor
 public class S3Controller {
 
-    @Autowired
+    @NonNull
     private S3Service service;
 
     @Operation(summary = "단일 파일 업로드 후 url 리턴")
