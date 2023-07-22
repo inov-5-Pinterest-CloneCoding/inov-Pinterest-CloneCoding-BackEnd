@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/file")
 @CrossOrigin(origins = "http://locallhost:3000", allowedHeaders = { "Authorization", "Cache-Control", "Content-Type" }, exposedHeaders = "Authorization")
@@ -19,6 +21,16 @@ public class S3Controller {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
         return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
+    }
+    @GetMapping("/save")
+    public String saveUrlsToDatabase() {
+        service.saveUrlsToDatabase();
+        return "Saved all URLs to database";
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<String>> listAllObjects() {
+        return new ResponseEntity<>(service.listAllObjects(), HttpStatus.OK);
     }
 
     @GetMapping("/download/{fileName}")

@@ -1,10 +1,11 @@
 package com.clonecoding.pinterest.global.S3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import com.clonecoding.pinterest.global.S3.entity.Image;
+import com.clonecoding.pinterest.global.S3.repository.S3ImageRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,16 +15,47 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class S3Service {
 
     @Value("${application.bucket.name}")
     private String bucketName;
 
     @Autowired
+    private S3ImageRepository s3ImageRepository;
+
+    @Autowired
     private AmazonS3 s3Client;
+
+    public List<String> listAllObjects(){
+        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix("flowers/");
+        ListObjectsV2Result result;
+        List<String> urls = new ArrayList<>();
+        do{
+            result = s3Client.listObjectsV2(req);
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+                String key = objectSummary.getKey();
+                String url = "https://" + "kh-myawsbucket" + ".s3." + "ap-northeast-2" + ".amazonaws.com/" + key;
+                urls.add(url);
+            }
+            String token = result.getNextContinuationToken();
+            req.setContinuationToken(token);
+        }while(result.isTruncated() == true);
+        return urls;
+    }
+    public void saveUrlsToDatabase() {
+        List<String> urls = listAllObjects();
+
+        for (String url : urls) {
+            Image image = new Image(url);
+            s3ImageRepository.save(image);
+        }
+    }
 
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
