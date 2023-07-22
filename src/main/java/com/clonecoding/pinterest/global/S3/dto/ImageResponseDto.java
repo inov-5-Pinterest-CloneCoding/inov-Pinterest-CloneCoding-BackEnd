@@ -1,7 +1,10 @@
 package com.clonecoding.pinterest.global.S3.dto;
 
+import com.clonecoding.pinterest.global.S3.entity.Image;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+@Schema(description = "이미지 요청시 응답 DTO")
 @Getter
 public class ImageResponseDto {
 
@@ -11,11 +14,11 @@ public class ImageResponseDto {
     private final String content;
     private final String username;
 
-    private ImageResponseDto(Long imageId, String pinImageUrl, String title, String content, String username) {
-        this.imageId = imageId;
-        this.pinImageUrl = pinImageUrl;
-        this.title = title;
-        this.content = content;
-        this.username = username;
+    public ImageResponseDto(Image image){
+        this.imageId = image.getId();
+        this.pinImageUrl = image.getPinImageUrl();
+        this.title = image.getTitle();
+        this.content = image.getContent();
+        this.username = image.getUsername();
     }
 }

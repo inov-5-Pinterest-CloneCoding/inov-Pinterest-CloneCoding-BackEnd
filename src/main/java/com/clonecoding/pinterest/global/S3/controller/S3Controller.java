@@ -1,6 +1,7 @@
 package com.clonecoding.pinterest.global.S3.controller;
 
 import com.clonecoding.pinterest.global.S3.service.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,8 @@ public class S3Controller {
         return "Saved all URLs to database";
     }
 
-    @GetMapping("/list")
+    @Operation(summary = "733개의 이미지 URL 전부 GET <-페이징 구현시 한 페이지당 x개 리턴될 예정 <- 무한스크롤 시 페이징 활용")
+    @GetMapping("/page/all")
     public ResponseEntity<List<String>> listAllObjects() {
         return new ResponseEntity<>(service.listAllObjects(), HttpStatus.OK);
     }
