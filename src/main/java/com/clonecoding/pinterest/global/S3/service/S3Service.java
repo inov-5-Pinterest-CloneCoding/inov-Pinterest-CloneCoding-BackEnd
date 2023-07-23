@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -39,11 +40,13 @@ public class S3Service {
 
     @Value("${myaws.bucket.url}")
     private String bucketUrl;
+    @Value("${myaws.bucket.prefix}")
+    private String bucketPrefix;
 
     public List<String> listAllObjects(){
 
         // s3에서 가져오기
-        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix("flowers/");
+        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(bucketPrefix);
         ListObjectsV2Result result;
         List<String> urls = new ArrayList<>();
         do{
@@ -56,6 +59,7 @@ public class S3Service {
             String token = result.getNextContinuationToken();
             req.setContinuationToken(token);
         }while(result.isTruncated());
+        Collections.reverse(urls);
         return urls;
     }
 
@@ -80,6 +84,7 @@ public class S3Service {
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
 
+        // 업로드 URL 아직 어디 저장할 지 안 정했으니 이대로 유지
         String fileUrl = "https://" + "kh-myawsbucket" + ".s3." + "ap-northeast-2" + ".amazonaws.com/" + fileName;
 
         return fileUrl;
