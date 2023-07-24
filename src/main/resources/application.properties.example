@@ -9,3 +9,7 @@ spring.jpa.properties.hibernate.use_sql_comments=true
 jwt.secret.key=
 myaws.bucket.url=
 myaws.bucket.prefix=
+
+client.url=http://localhost:4000
+kakao.login.callback.url=/kakao/login
+kakao.login.client.id=

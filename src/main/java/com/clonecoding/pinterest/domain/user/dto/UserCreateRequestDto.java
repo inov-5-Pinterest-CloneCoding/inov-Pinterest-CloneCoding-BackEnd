@@ -11,4 +11,5 @@ public class UserCreateRequestDto {
     private String username;
     private String password;
     private UserRoleEnum role = UserRoleEnum.USER;
+    private String adminToken = "";
 }

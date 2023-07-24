@@ -5,12 +5,12 @@ import com.clonecoding.pinterest.domain.user.entity.User;
 import lombok.Getter;
 
 @Getter
-public class UserCreateResponseDto {
+public class UserResponseDto {
     private String email;
     private String username;
     private UserRoleEnum role;
 
-    public UserCreateResponseDto(User user){
+    public UserResponseDto(User user){
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.role =user.getRole();

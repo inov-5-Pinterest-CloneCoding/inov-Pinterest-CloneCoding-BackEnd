@@ -1,5 +1,6 @@
 package com.clonecoding.pinterest.domain.user.entity;
 
+import com.clonecoding.pinterest.domain.user.dto.KakaoUserDto;
 import com.clonecoding.pinterest.domain.user.dto.UserCreateRequestDto;
 import com.clonecoding.pinterest.global.entity.TimeStamped;
 import jakarta.persistence.*;
@@ -13,6 +14,9 @@ public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private Long kakaoId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -35,5 +39,18 @@ public class User extends TimeStamped {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.role = requestDto.getRole();
+    }
+
+    public User(KakaoUserDto kakaoUserDto, String password){
+        this.email = kakaoUserDto.getEmail();
+        this.username = kakaoUserDto.getUsername();
+        this.password = password;
+        //카카오 유저는 기본 USER
+        this.role = UserRoleEnum.USER;
+    }
+
+    public User kakaoIdUpdate(KakaoUserDto kakaoUserDto){
+        this.kakaoId = kakaoUserDto.getId();
+        return this;
     }
 }

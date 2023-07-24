@@ -5,7 +5,10 @@ import com.clonecoding.pinterest.global.security.filter.JwtAuthenticationFilter;
 import com.clonecoding.pinterest.global.security.filter.JwtAuthorizationFilter;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsServiceImpl;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,18 +34,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+    @NonNull
+    private JwtUtil jwtUtil;
+    @NonNull
+    private UserDetailsServiceImpl userDetailsService;
+    @NonNull
+    private AuthenticationConfiguration authenticationConfiguration;
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
-    private final AuthenticationConfiguration authenticationConfiguration;
-
-    @Autowired
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-        this.authenticationConfiguration = authenticationConfiguration;
-    }
+    @Value("${client.url}")
+    private String clientUrl;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -82,6 +84,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequest) ->
                 authorizeHttpRequest
                         .requestMatchers("/api/user/signup").permitAll()
+                        .requestMatchers("/api/user/kakao/login").permitAll()
+                        .requestMatchers("/api/user/cors").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
@@ -103,7 +107,7 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(clientUrl));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
