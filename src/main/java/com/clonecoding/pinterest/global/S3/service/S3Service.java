@@ -85,7 +85,7 @@ public class S3Service {
         fileObj.delete();
 
         // 업로드 URL 아직 어디 저장할 지 안 정했으니 이대로 유지
-        String fileUrl = "https://" + "kh-myawsbucket" + ".s3." + "ap-northeast-2" + ".amazonaws.com/" + fileName;
+        String fileUrl = bucketUrl + fileName;
 
         return fileUrl;
     }
