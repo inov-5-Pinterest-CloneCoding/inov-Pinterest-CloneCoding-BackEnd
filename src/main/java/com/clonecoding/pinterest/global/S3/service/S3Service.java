@@ -38,9 +38,9 @@ public class S3Service {
     @NonNull
     private AmazonS3 s3Client;
 
-    @Value("${myaws.bucket.url}")
+    @Value("https://kh-myawsbucket.s3.ap-northeast-2.amazonaws.com/")
     private String bucketUrl;
-    @Value("${myaws.bucket.prefix}")
+    @Value("")
     private String bucketPrefix;
 
     public List<String> listAllObjects(){

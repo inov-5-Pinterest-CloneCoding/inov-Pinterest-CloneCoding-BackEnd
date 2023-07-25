@@ -1,10 +1,15 @@
 package com.clonecoding.pinterest.domain.pin.entity;
 
+import com.clonecoding.pinterest.domain.pin.dto.PinRequestDTO;
+import com.clonecoding.pinterest.domain.pin.dto.PinResponseDTO;
 import com.clonecoding.pinterest.global.entity.TimeStamped;
 import com.clonecoding.pinterest.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class Pin extends TimeStamped {
@@ -19,9 +24,13 @@ public class Pin extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Pin(Long id, String pinImageUrl, User user) {
-        this.id = id;
+    @Builder
+    public Pin(String pinImageUrl, User user) {
         this.pinImageUrl = pinImageUrl;
         this.user = user;
+    }
+
+    public void modifyPin(String pinImageUrl){
+        this.pinImageUrl = pinImageUrl;
     }
 }
