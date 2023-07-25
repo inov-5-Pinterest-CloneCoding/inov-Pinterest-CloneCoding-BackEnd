@@ -1,18 +1,17 @@
 package com.clonecoding.pinterest.global.security.config;
 
 import com.clonecoding.pinterest.global.security.exception.MyAccessDeniedHandler;
+import com.clonecoding.pinterest.global.security.exception.MyAuthenticationEntryPoint;
+import com.clonecoding.pinterest.global.security.exception.ResponseUtil;
 import com.clonecoding.pinterest.global.security.filter.JwtAuthenticationFilter;
 import com.clonecoding.pinterest.global.security.filter.JwtAuthorizationFilter;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsServiceImpl;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,6 +41,8 @@ public class WebSecurityConfig {
     private UserDetailsServiceImpl userDetailsService;
     @NonNull
     private AuthenticationConfiguration authenticationConfiguration;
+    @NonNull
+    private ResponseUtil responseUtil;
 
     @Value("${client.url}")
     private String clientUrl;
@@ -65,12 +66,17 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, responseUtil, userDetailsService);
     }
 
     @Bean
     public MyAccessDeniedHandler myAccessDeniedHandler() {
-        return new MyAccessDeniedHandler();
+        return new MyAccessDeniedHandler(responseUtil);
+    }
+
+    @Bean
+    public MyAuthenticationEntryPoint myAuthenticationEntryPoint() {
+        return new MyAuthenticationEntryPoint(responseUtil);
     }
 
     @Bean
@@ -99,6 +105,7 @@ public class WebSecurityConfig {
 
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling
+                        .authenticationEntryPoint(myAuthenticationEntryPoint())
                         .accessDeniedHandler(myAccessDeniedHandler())
         );
         return http.build();

@@ -6,16 +6,19 @@ import com.clonecoding.pinterest.domain.user.dto.UserLoginDto;
 import com.clonecoding.pinterest.domain.user.dto.UserResponseDto;
 import com.clonecoding.pinterest.domain.user.entity.User;
 import com.clonecoding.pinterest.domain.user.service.UserService;
+import com.clonecoding.pinterest.global.exception.validation.ValidationUtil;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsImpl;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,10 +30,13 @@ public class UserController {
     private UserService userService;
     @NonNull
     private JwtUtil jwtUtil;
+    @NonNull
+    private ValidationUtil validationUtil;
 
     @Operation(summary = "ADMIN이라면 TOKEN값을 같이 보내주세요! 기본 유저라면 role과 adminToken은 안보내도 기본 USER로 생성됩니다.")
     @PostMapping("/signup")
-    public UserResponseDto signUpUser(@RequestBody UserCreateRequestDto requestDto) {
+    public UserResponseDto signUpUser(@RequestBody @Valid UserCreateRequestDto requestDto, BindingResult bindingResult){
+        validationUtil.bindingResultHandle(bindingResult);
         return this.userService.signUpUser(requestDto);
     }
 

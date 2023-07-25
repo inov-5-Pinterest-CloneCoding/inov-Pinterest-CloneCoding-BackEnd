@@ -29,6 +29,7 @@ public class JwtUtil {
     // Cookie 에서 사용자 권한 값의 KEY
     public static final String CLAIM_AUTHORIZATION_KEY = "auth";
     public static final String CLAIM_EMAIL_KEY = "email";
+    public static final String CLAIM_USERNAME_KEY = "username";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
@@ -47,7 +48,7 @@ public class JwtUtil {
 
     public String createToken(User user) {
         Date date = new Date();
-        return BEARER_PREFIX + Jwts.builder().setSubject(String.valueOf(user.getId())).claim(CLAIM_EMAIL_KEY, user.getEmail()).claim(CLAIM_AUTHORIZATION_KEY, user.getRole()).setExpiration(new Date(date.getTime() + TOKEN_TIME)).setIssuedAt(date).signWith(key, signatureAlgorithm).compact();
+        return BEARER_PREFIX + Jwts.builder().setSubject(String.valueOf(user.getId())).claim(CLAIM_USERNAME_KEY, user.getUsername()).claim(CLAIM_EMAIL_KEY, user.getEmail()).claim(CLAIM_AUTHORIZATION_KEY, user.getRole()).setExpiration(new Date(date.getTime() + TOKEN_TIME)).setIssuedAt(date).signWith(key, signatureAlgorithm).compact();
     }
 
     public void addJwtToCookie(String token, HttpServletResponse res) {
@@ -85,7 +86,7 @@ public class JwtUtil {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
-            return "pass";
+//            return "pass";
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
