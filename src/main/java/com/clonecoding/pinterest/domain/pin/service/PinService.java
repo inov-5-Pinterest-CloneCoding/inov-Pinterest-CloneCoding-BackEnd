@@ -63,7 +63,7 @@ public class PinService {
             }
         }
 
-        String imgFileUrl = s3Service.uploadFile(requestDTO.getImageFile());
+        String imgFileUrl = null;
 
         MultipartFile imageFile = requestDTO.getImageFile();
         if(!imageFile.isEmpty()){
