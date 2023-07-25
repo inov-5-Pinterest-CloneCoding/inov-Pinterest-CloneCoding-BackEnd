@@ -44,13 +44,10 @@ public class PinController {
     // pin 작성
     @PostMapping(value = "", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<PinResponseDTO> createPin(
-            @RequestParam("pinImageUrl")String pinImageUrl,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-//        log.info("========================================================");
-//        String pinImageUrl = "123";
-        PinRequestDTO requestDTO = new PinRequestDTO(pinImageUrl,imageFile);
+        PinRequestDTO requestDTO = new PinRequestDTO(imageFile);
         PinResponseDTO response = pinService.createPin(userDetails.getUser().getId(),requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -58,11 +55,10 @@ public class PinController {
     // pin 수정
     @PutMapping("/{pinId}")
     public ResponseEntity<PinResponseDTO> modifyPin(@PathVariable("pinId") Long pinId,
-                                                    @RequestParam("pinImageUrl")String pinImageUrl,
                                                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        PinRequestDTO requestDTO = new PinRequestDTO(pinImageUrl,imageFile);
+        PinRequestDTO requestDTO = new PinRequestDTO(imageFile);
         PinResponseDTO responseDTO = pinService.modifyPin(pinId, requestDTO,userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }

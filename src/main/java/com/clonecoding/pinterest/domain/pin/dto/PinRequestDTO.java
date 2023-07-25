@@ -8,8 +8,7 @@ public class PinRequestDTO {
     private String pinImageUrl;
     private MultipartFile imageFile;
 
-    public PinRequestDTO(String pinImageUrl, MultipartFile imageFile){
-        this.pinImageUrl = pinImageUrl;
+    public PinRequestDTO(MultipartFile imageFile){
         this.imageFile = imageFile;
     }
 

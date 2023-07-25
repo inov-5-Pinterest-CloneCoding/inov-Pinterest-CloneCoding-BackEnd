@@ -9,8 +9,6 @@ import com.clonecoding.pinterest.domain.user.entity.User;
 import com.clonecoding.pinterest.domain.user.entity.UserRoleEnum;
 import com.clonecoding.pinterest.domain.user.repository.UserRepository;
 import com.clonecoding.pinterest.global.S3.service.S3Service;
-import com.clonecoding.pinterest.global.security.filter.UserDetailsImpl;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +32,7 @@ public class PinService {
         String imgFileUrl = null;
 
         MultipartFile imageFile = requestDTO.getImageFile();
-        if (imageFile != null && !imageFile.isEmpty()){
+        if (!imageFile.isEmpty()){
             try{
                 imgFileUrl = s3Service.uploadFile(imageFile);
             }catch(Exception e){
@@ -42,11 +40,7 @@ public class PinService {
             }
         }
 
-        Pin pin = Pin.builder()
-                .pinImageUrl(imgFileUrl)
-                .user(user)
-                .build();
-
+        Pin pin = new Pin(imgFileUrl, user);
         Pin savePin = pinRepository.save(pin);
 
         PinResponseDTO responseDTO = new PinResponseDTO(savePin);
@@ -57,24 +51,22 @@ public class PinService {
     //수정
     @Transactional
     public PinResponseDTO modifyPin(Long id, PinRequestDTO requestDTO, User user){
-//        User user = userRepository.findById(id).orElseThrow(
-//                ()->  new IllegalArgumentException("존재하지 않는 아이디입니다.")
-//        );
 
         Pin pin = pinRepository.findById(id).orElseThrow(
                 ()-> new IllegalArgumentException("존재하지 않는 Pin 입니다.")
         );
 
+
         if(!user.getRole().equals(UserRoleEnum.ADMIN)){
             if(!(pin.getUser().getId().equals(user.getId()))){
-                throw new IllegalArgumentException("허가 받지 않는 사용자 입니다.");
+                throw new IllegalArgumentException("허가 받지 않은 사용자 입니다.");
             }
         }
 
-        String imgFileUrl = pin.getPinImageUrl();
+        String imgFileUrl = s3Service.uploadFile(requestDTO.getImageFile());
 
         MultipartFile imageFile = requestDTO.getImageFile();
-        if(imageFile != null && !imageFile.isEmpty()){
+        if(!imageFile.isEmpty()){
             try{
                 imgFileUrl = s3Service.uploadFile(imageFile);
             }catch (Exception e){
@@ -102,12 +94,6 @@ public class PinService {
         Pin pin = pinRepository.findById(id).orElseThrow(
                 ()-> new IllegalArgumentException("존재하지 않는 Pin입니다.")
         );
-
-        if(!user.getRole().equals(UserRoleEnum.ADMIN)){
-            if(!(pin.getUser().getId().equals(user.getId()))){
-                throw new IllegalArgumentException("허가 받지 않은 사용자 입니다.");
-            }
-        }
 
         if(hasRole(user, pin)){
             pinRepository.delete(pin);

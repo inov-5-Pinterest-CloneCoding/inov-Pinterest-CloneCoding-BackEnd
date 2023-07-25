@@ -3,20 +3,19 @@ package com.clonecoding.pinterest.global.S3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
-import com.clonecoding.pinterest.global.S3.dto.ImageResponseDto;
 import com.clonecoding.pinterest.global.S3.entity.Image;
 import com.clonecoding.pinterest.global.S3.repository.S3ImageRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,9 +37,9 @@ public class S3Service {
     @NonNull
     private AmazonS3 s3Client;
 
-    @Value("https://kh-myawsbucket.s3.ap-northeast-2.amazonaws.com/")
+    @Value("${myaws.bucket.url}")
     private String bucketUrl;
-    @Value("")
+    @Value("${myaws.bucket.prefix}")
     private String bucketPrefix;
 
     public List<String> listAllObjects(){
