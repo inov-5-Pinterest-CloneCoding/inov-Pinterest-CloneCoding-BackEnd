@@ -18,12 +18,12 @@ public class imgUtil {
 
     public static boolean validImgFile(InputStream inputStream) throws IOException {
         try {
-            List<String> notValidTypeList = Arrays.asList("image/jpeg", "image/png", "image/gif", "image/bmp", "image/x-windows-bmp");
+            List<String> ValidTypeList = Arrays.asList("image/jpeg", "image/png", "image/gif", "image/bmp", "image/x-windows-bmp");
 
             String mimeType = tika.detect(inputStream);
             log.info("MimeType : " + mimeType);
 
-            boolean isValid = notValidTypeList.stream().anyMatch(notValidType -> notValidType.equalsIgnoreCase(mimeType));
+            boolean isValid = ValidTypeList.stream().anyMatch(notValidType -> notValidType.equalsIgnoreCase(mimeType));
 
             return isValid;
         } catch (IOException e) {

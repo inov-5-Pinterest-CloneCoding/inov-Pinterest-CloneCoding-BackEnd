@@ -44,10 +44,7 @@ public class PinService {
             log.info("image file 변환." + imageFile.getContentType());
 
             if(!imageFile.isEmpty()){
-                boolean isValid = imgUtil.validImgFile(inputStream);
-                if(!isValid){
-                    throw new IllegalArgumentException("이미지 파일만 올려주세요.");
-                }
+                if(!imgUtil.validImgFile(inputStream)) throw new IllegalArgumentException("이미지 파일만 올려주세요");
                 imgFileUrl = s3Service.uploadFile(imageFile);
             }
 
@@ -86,10 +83,7 @@ public class PinService {
             log.info("image file 변환." + imageFile.getContentType());
 
             if(!imageFile.isEmpty()){
-                boolean isValid = imgUtil.validImgFile(inputStream);
-                if(!isValid){
-                    throw new IllegalArgumentException("이미지 파일만 올려주세요.");
-                }
+                if(!imgUtil.validImgFile(inputStream)) throw new IllegalArgumentException("이미지 파일만 올려주세요");
                 imgFileUrl = s3Service.uploadFile(imageFile);
             }
 
