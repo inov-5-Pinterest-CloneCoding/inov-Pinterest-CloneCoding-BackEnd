@@ -1,5 +1,6 @@
 package com.clonecoding.pinterest.global.security.filter;
 
+import com.clonecoding.pinterest.global.security.config.WebSecurityConfig;
 import com.clonecoding.pinterest.global.security.exception.ResponseUtil;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -36,9 +38,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getTokenFromRequest(request);
-        log.info("처리 전 토큰 : " + tokenValue);
-        if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 substring
+        boolean loginPass = JwtAuthenticationFilter.loginUrl.equals(request.getServletPath());
+        boolean permitPass = Arrays.stream(WebSecurityConfig.matchRouteArray)
+                .anyMatch(str -> str.equals(request.getServletPath()));
+
+        if (loginPass || permitPass || !StringUtils.hasText(tokenValue)) {
+            filterChain.doFilter(request, response);
+        } else if (StringUtils.hasText(tokenValue)) {
+            log.info("처리 전 토큰 : " + tokenValue);
             tokenValue = jwtUtil.subStringToken(tokenValue);
             log.info("처리 후 토큰 : " + tokenValue);
             switch (jwtUtil.validateToken(tokenValue)) {
@@ -60,8 +67,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 }
             }
-        } else {
-            filterChain.doFilter(request, response);
         }
     }
 

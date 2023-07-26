@@ -23,6 +23,7 @@ import java.io.IOException;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    public static final String loginUrl = "/api/user/login";
     private final JwtUtil jwtUtil;
     private final ResponseUtil responseUtil;
 
@@ -30,7 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JwtAuthenticationFilter(JwtUtil jwtUtil, ResponseUtil responseUtil) {
         this.jwtUtil = jwtUtil;
         this.responseUtil = responseUtil;
-        setFilterProcessesUrl("/api/user/login");
+        setFilterProcessesUrl(JwtAuthenticationFilter.loginUrl);
     }
 
     @Override

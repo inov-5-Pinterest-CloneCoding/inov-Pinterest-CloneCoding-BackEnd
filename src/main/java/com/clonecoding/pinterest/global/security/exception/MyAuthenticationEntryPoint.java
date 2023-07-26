@@ -20,6 +20,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        responseUtil.responseToExceptionResponseDto(response, HttpStatus.FORBIDDEN, "인증에 실패했습니다.");
+        //인증 실패, 없는 라우트 등 잘못된 요청일 경우
+        responseUtil.responseToExceptionResponseDto(response, HttpStatus.FORBIDDEN, "잘못된 요청입니다.");
     }
 }
