@@ -109,7 +109,7 @@ public class JwtUtil {
 
     public String getTokenFromRequest(HttpServletRequest request) {
         log.info("getTokenFromRequest");
-        String token = request.getHeader(AUTHORIZATION_HEADER);
+        String token = request.getHeader("authorization");
         if (token != null) {
 //            log.info(token);
             try {

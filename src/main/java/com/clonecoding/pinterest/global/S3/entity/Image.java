@@ -27,20 +27,19 @@ public class Image extends TimeStamped {
     @Column
     private String title;
 
-    @Lob
-    @Column(columnDefinition = "text")
+    @Column
     private String content;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder
-    public Image(String pinImageUrl, String title, String content, User user){
+
+    public Image(String pinImageUrl,User user, String title, String content){
         this.pinImageUrl = pinImageUrl;
+        this.user = user;
         this.title = title;
         this.content = content;
-        this.user = user;
     }
 
     public Image(String pinImageUrl) {

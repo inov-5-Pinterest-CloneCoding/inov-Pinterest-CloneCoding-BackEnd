@@ -3,6 +3,10 @@ package com.clonecoding.pinterest.global.S3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import com.clonecoding.pinterest.domain.user.entity.User;
+import com.clonecoding.pinterest.domain.user.repository.UserRepository;
+import com.clonecoding.pinterest.global.S3.dto.SingleImageRequestDto;
+import com.clonecoding.pinterest.global.S3.dto.SingleImageResponseDto;
 import com.clonecoding.pinterest.global.S3.entity.Image;
 import com.clonecoding.pinterest.global.S3.repository.S3ImageRepository;
 import lombok.NonNull;
@@ -35,12 +39,47 @@ public class S3Service {
     private S3ImageRepository s3ImageRepository;
 
     @NonNull
+    private UserRepository userRepository;
+
+    @NonNull
     private AmazonS3 s3Client;
 
     @Value("${myaws.bucket.url}")
     private String bucketUrl;
     @Value("${myaws.bucket.prefix}")
     private String bucketPrefix;
+
+    @Transactional
+    public SingleImageResponseDto uploadFile(SingleImageRequestDto singleImageRequestDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("Not Found User")
+        );
+
+        String imgFileUrl = "https://kh-myawsbucket.s3.ap-northeast-2.amazonaws.com/Pinterest_default.png";
+        // 이미지가 없을 경우 등록될 기본 이미지
+
+        MultipartFile imageFile = singleImageRequestDto.getImageFile();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                File fileObj = convertMultiPartFileToFile(imageFile);
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+
+                imgFileUrl = bucketUrl+fileName;
+
+            } catch (Exception e) {
+                System.err.println("Failed to upload file to S3: " + e.getMessage());
+                throw e;
+            }
+        }
+        Image image = new Image(imgFileUrl, user, singleImageRequestDto.getTitle(), singleImageRequestDto.getContent());
+        Image savedImage = s3ImageRepository.save(image);
+
+        SingleImageResponseDto singleImageResponseDto = new SingleImageResponseDto(savedImage);
+        return singleImageResponseDto;
+    }
+
 
     public List<String> listAllObjects(){
 
@@ -118,4 +157,5 @@ public class S3Service {
         }
         return convertedFile;
     }
+
 }
