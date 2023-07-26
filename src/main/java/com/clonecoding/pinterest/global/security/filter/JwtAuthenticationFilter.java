@@ -1,6 +1,7 @@
 package com.clonecoding.pinterest.global.security.filter;
 
 import com.clonecoding.pinterest.global.exception.dto.ExceptionResponseDto;
+import com.clonecoding.pinterest.global.security.exception.ResponseUtil;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import com.clonecoding.pinterest.domain.user.dto.UserLoginDto;
 import com.clonecoding.pinterest.domain.user.entity.User;
@@ -23,10 +24,12 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final ResponseUtil responseUtil;
 
     @Autowired
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, ResponseUtil responseUtil) {
         this.jwtUtil = jwtUtil;
+        this.responseUtil = responseUtil;
         setFilterProcessesUrl("/api/user/login");
     }
 
@@ -59,18 +62,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         jwtUtil.addJwtToCookie(token, response);
     }
 
-    // config에서 AuthenticationEntryPoint handling 할거라면 처리X
+    //authenticationEntryPoint는 기본적으로 모든 authenticated 거절을 핸들링한다.
+    //unsuccessfulAuthentication은 UsernamePasswordAuthenticationFilter에 한해서만 핸들링
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info(failed.getMessage());
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.UNAUTHORIZED, failed.getMessage());
-
-        //object to json string ( responseDto에 getter 빠지면 No serializer found ~ error )
-        String responseString = new ObjectMapper().writeValueAsString(responseDto);
-        response.getWriter().write(responseString);
+        responseUtil.responseToExceptionResponseDto(response, HttpStatus.UNAUTHORIZED, failed.getMessage());
     }
 }
