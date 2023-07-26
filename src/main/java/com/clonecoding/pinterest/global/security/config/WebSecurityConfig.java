@@ -46,6 +46,10 @@ public class WebSecurityConfig {
 
     @Value("${client.url}")
     private String clientUrl;
+    public static final String[] matchRouteArray = {
+            "/api/user/signup", "/api/user/cors", "/api/user/kakao/login", "/swagger-ui/**", "/webjars/**",
+            "/v3/api-docs/**", "/swagger-resources/**", "/api/file/**"
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -86,18 +90,10 @@ public class WebSecurityConfig {
 
         http.sessionManagement((sessionManagement) ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
         http.authorizeHttpRequests((authorizeHttpRequest) ->
-                authorizeHttpRequest
-                        .requestMatchers("/api/user/signup").permitAll()
-                        .requestMatchers("/api/user/kakao/login").permitAll()
-                        .requestMatchers("/api/user/cors").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/webjars/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/swagger-resources/**").permitAll()
-                        .requestMatchers("/api/file/**").permitAll()
-                        .anyRequest().authenticated()
+                        authorizeHttpRequest
+                                .requestMatchers(matchRouteArray).permitAll()
+                                .anyRequest().authenticated()
         );
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
