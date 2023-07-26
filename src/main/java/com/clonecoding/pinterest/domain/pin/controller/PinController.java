@@ -5,8 +5,6 @@ import com.clonecoding.pinterest.domain.pin.dto.PinRequestDTO;
 import com.clonecoding.pinterest.domain.pin.dto.PinResponseDTO;
 import com.clonecoding.pinterest.domain.pin.service.PinService;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsImpl;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
