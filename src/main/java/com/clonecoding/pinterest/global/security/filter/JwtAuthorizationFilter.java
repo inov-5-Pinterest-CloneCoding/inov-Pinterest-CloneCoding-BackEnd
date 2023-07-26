@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getTokenFromRequest(request);
         boolean loginPass = JwtAuthenticationFilter.loginUrl.equals(request.getServletPath());
-        boolean permitPass = Arrays.stream(WebSecurityConfig.matchRouteArray)
+        boolean permitPass = Arrays.stream(WebSecurityConfig.permitAllRouteArray)
                 .anyMatch(str -> str.equals(request.getServletPath()));
 
         if (loginPass || permitPass || !StringUtils.hasText(tokenValue)) {
