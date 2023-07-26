@@ -1,5 +1,6 @@
 package com.clonecoding.pinterest.global.security.filter;
 
+import com.clonecoding.pinterest.global.security.exception.ResponseUtil;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,12 +23,14 @@ import java.io.IOException;
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final ResponseUtil responseUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, ResponseUtil responseUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.responseUtil = responseUtil;
     }
 
     @Override
@@ -40,12 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             switch (jwtUtil.validateToken(tokenValue)) {
                 case "fail" -> {
                     log.info("case fail");
-                    response.setStatus(403);
-                    //void 여서 return 없어도 된다. if 다음 동작도 없으므로 마지막
-                }
-                case "pass" -> {
-                    log.info("case pass");
-                    filterChain.doFilter(request, response);
+                    responseUtil.responseToExceptionResponseDto(response, HttpStatus.FORBIDDEN, "토큰 유효성 검증에 실패했습니다.");
                 }
                 default -> {
                     Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
@@ -61,7 +60,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 }
             }
-        } else filterChain.doFilter(request, response);
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 
     // 인증 처리
