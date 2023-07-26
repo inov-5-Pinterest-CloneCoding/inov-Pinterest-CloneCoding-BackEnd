@@ -41,6 +41,9 @@ public class UserService {
     @NonNull
     private JwtUtil jwtUtil;
 
+    @NonNull
+    private IdenticonService identiconService;
+
     @Value("${client.url}")
     private String clientUrl;
 
@@ -58,8 +61,24 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
         if (user.isPresent())
             throw new IllegalArgumentException("가입된 이메일 입니다.");
+
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        return new UserResponseDto(this.userRepository.save(new User(requestDto)));
+
+        String userEmail = requestDto.getEmail();
+        User savedUser = User.builder()
+                .email(userEmail)
+                .profileImageUrl(identiconService.makeIdenticonUrl(userEmail))
+                .username(requestDto.getUsername())
+                .password(requestDto.getPassword())
+                .role(requestDto.getRole())
+                .build();
+
+        userRepository.save(savedUser);
+
+        UserResponseDto responseDto = new UserResponseDto(savedUser);
+        return responseDto;
+
+
     }
 
     @Transactional
