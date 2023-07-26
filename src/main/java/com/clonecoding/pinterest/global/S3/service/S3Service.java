@@ -102,7 +102,7 @@ public class S3Service {
     }
 
     public Slice<Image> getImages(int page, int size){
-        return s3ImageRepository.findAll(PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "createdAt")));
+        return s3ImageRepository.findAll(PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "id")));
     }
 
 
