@@ -46,7 +46,7 @@ public class WebSecurityConfig {
 
     @Value("${client.url}")
     private String clientUrl;
-    public static final String[] matchRouteArray = {
+    public static final String[] permitAllRouteArray = {
             "/api/user/signup", "/api/user/cors", "/api/user/kakao/login", "/swagger-ui/**", "/webjars/**",
             "/v3/api-docs/**", "/swagger-resources/**", "/api/file/**"
     };
@@ -92,7 +92,7 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorizeHttpRequest) ->
                         authorizeHttpRequest
-                                .requestMatchers(matchRouteArray).permitAll()
+                                .requestMatchers(permitAllRouteArray).permitAll()
                                 .anyRequest().authenticated()
         );
 
