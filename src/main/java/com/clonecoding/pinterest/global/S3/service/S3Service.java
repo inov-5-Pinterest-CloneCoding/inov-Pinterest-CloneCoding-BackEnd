@@ -49,7 +49,7 @@ public class S3Service {
     @Value("${myaws.bucket.prefix}")
     private String bucketPrefix;
 
-    @Transactional
+    //@Transactional
     public SingleImageResponseDto uploadFile(SingleImageRequestDto singleImageRequestDto, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("Not Found User")
