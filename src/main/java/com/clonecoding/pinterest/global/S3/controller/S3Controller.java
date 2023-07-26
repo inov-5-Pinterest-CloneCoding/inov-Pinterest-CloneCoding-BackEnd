@@ -53,7 +53,10 @@ public class S3Controller {
 
     @Operation(summary="GET: DB에서 일정 개수의 이미지 URL (페이징 o, 무한스크롤 지원용)")
     @GetMapping("/images")
-    public Slice<Image> getImages(@RequestParam(defaultValue = "0") @Parameter(description = "요청할 페이지(0부터 시작)") int page, @RequestParam(defaultValue = "63")@Parameter(description = "한 페이지에 몇 개 포함할지 지정") int size) {
+    public Slice<Image> getImages(@RequestParam(defaultValue = "0")
+                                      @Parameter(description = "요청할 페이지(0부터 시작)") int page,
+                                  @RequestParam(defaultValue = "63")
+                                  @Parameter(description = "한 페이지에 몇 개 포함할지 지정") int size) {
         return service.getImages(page, size);
     }
 

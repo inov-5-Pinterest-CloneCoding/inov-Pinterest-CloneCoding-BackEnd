@@ -3,6 +3,7 @@ package com.clonecoding.pinterest.domain.user.entity;
 import com.clonecoding.pinterest.domain.user.dto.KakaoUserDto;
 import com.clonecoding.pinterest.domain.user.dto.UserCreateRequestDto;
 import com.clonecoding.pinterest.global.entity.TimeStamped;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
