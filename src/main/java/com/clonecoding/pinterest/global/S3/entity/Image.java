@@ -5,6 +5,7 @@ import com.clonecoding.pinterest.global.entity.TimeStamped;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,12 +31,17 @@ public class Image extends TimeStamped {
     @Column(columnDefinition = "text")
     private String content;
 
-    @Column
-    private String username;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public Image(String pinImageUrl, String title, String content, User user){
+        this.pinImageUrl = pinImageUrl;
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
 
     public Image(String pinImageUrl) {
         this.pinImageUrl = pinImageUrl;
