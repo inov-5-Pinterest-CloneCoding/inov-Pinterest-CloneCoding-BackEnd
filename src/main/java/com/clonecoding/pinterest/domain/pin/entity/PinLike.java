@@ -18,4 +18,9 @@ public class PinLike {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public PinLike(User user, Pin pin) {
+        this.user = user;
+        this.pin = pin;
+    }
 }

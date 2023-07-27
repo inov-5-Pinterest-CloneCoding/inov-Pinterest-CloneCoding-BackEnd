@@ -5,6 +5,7 @@ import com.clonecoding.pinterest.domain.pin.dto.PinRequestDTO;
 import com.clonecoding.pinterest.domain.pin.dto.PinResponseDTO;
 import com.clonecoding.pinterest.domain.pin.service.PinService;
 import com.clonecoding.pinterest.global.security.filter.UserDetailsImpl;
+import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,11 @@ public class PinController {
         return null;
     }
     // 특정 pin 조회
-
+    @GetMapping("/{pinId}")
+    public PinResponseDTO getPinDetail(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue,
+                                       @PathVariable Long pinId){
+        return pinService.getPinDetail(tokenValue, pinId);
+    }
 
 
     // pin 작성
@@ -66,5 +71,12 @@ public class PinController {
                                                     ,@AuthenticationPrincipal UserDetailsImpl userDetails){
         BaseResponseDTO responseDTO = pinService.deletePin(pinId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    // 핀 좋아요 API
+    @PostMapping("/{pinId}/like")
+    public ResponseEntity<String> likePin(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue,
+                                          @PathVariable Long pinId) {
+        return pinService.likePin(tokenValue,pinId);
     }
 }

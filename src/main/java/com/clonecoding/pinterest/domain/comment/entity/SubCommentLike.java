@@ -1,28 +1,28 @@
-package com.clonecoding.pinterest.domain.pin.entity;
+package com.clonecoding.pinterest.domain.comment.entity;
 
-import com.clonecoding.pinterest.global.entity.TimeStamped;
 import com.clonecoding.pinterest.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
-public class Comment extends TimeStamped {
+public class SubCommentLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String context;
-
-    @Column
-    private Long likeCount;
-
     @ManyToOne
-    @JoinColumn(name = "pin_id")
-    private Pin pin;
+    @JoinColumn(name = "subComment_id")
+    private SubComment subComment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public SubCommentLike(User user, SubComment subComment) {
+        this.user = user;
+        this.subComment = subComment;
+    }
 }
