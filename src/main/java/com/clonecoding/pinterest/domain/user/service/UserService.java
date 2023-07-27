@@ -158,7 +158,7 @@ public class UserService {
         if(user != null) user.kakaoIdUpdate(kakaoUserDto);
         else {
             String randomPwd = passwordEncoder.encode(String.valueOf(kakaoUserDto.getId()));
-            user = new User(kakaoUserDto, randomPwd);
+            user = new User(kakaoUserDto, randomPwd,identiconService.makeIdenticonUrl(kakaoUserDto.getEmail()));
             userRepository.save(user);
         }
         return user;

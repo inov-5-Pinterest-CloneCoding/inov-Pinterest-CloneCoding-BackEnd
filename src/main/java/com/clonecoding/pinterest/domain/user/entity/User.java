@@ -54,12 +54,13 @@ public class User extends TimeStamped {
         this.role = requestDto.getRole();
     }
 
-    public User(KakaoUserDto kakaoUserDto, String password){
+    public User(KakaoUserDto kakaoUserDto, String password,String profileImageUrl){
         this.email = kakaoUserDto.getEmail();
         this.username = kakaoUserDto.getUsername();
         this.password = password;
         //카카오 유저는 기본 USER
         this.role = UserRoleEnum.USER;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public User kakaoIdUpdate(KakaoUserDto kakaoUserDto){
