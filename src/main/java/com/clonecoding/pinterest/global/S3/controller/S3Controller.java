@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/api/file")
 @CrossOrigin(origins = "http://locallhost:3000", allowedHeaders = { "Authorization", "Cache-Control", "Content-Type" }, exposedHeaders = "Authorization")
 @RequiredArgsConstructor
-@Tag(name = "이미지 기능 테스트 API")
+@Tag(name = "📌이미지 API", description = "지금까지 테스트할때 사용한 것")
 public class S3Controller {
 
     @NonNull
@@ -46,6 +46,7 @@ public class S3Controller {
         return "Saved all URLs to database";
     }
 
+    @Hidden
     @Operation(summary = "GET: DB의 모든 이미지 URL (페이징 x, 무한스크롤 x)")
     @GetMapping("/all")
     public ResponseEntity<List<String>> listAllObjects() {
