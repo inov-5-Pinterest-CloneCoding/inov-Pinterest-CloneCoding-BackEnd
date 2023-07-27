@@ -1,13 +1,15 @@
 package com.clonecoding.pinterest.domain.pin.entity;
 
-import com.clonecoding.pinterest.domain.pin.dto.PinRequestDTO;
-import com.clonecoding.pinterest.domain.pin.dto.PinResponseDTO;
-import com.clonecoding.pinterest.global.entity.TimeStamped;
+import com.clonecoding.pinterest.domain.comment.entity.Comment;
 import com.clonecoding.pinterest.domain.user.entity.User;
+import com.clonecoding.pinterest.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -23,6 +25,12 @@ public class Pin extends TimeStamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL)
+    private List<PinLike> pinLikeList = new ArrayList<>();
 
     @Builder
     public Pin(String pinImageUrl, User user) {

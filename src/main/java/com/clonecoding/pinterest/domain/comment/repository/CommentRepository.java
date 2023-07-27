@@ -1,6 +1,6 @@
-package com.clonecoding.pinterest.domain.pin.repository;
+package com.clonecoding.pinterest.domain.comment.repository;
 
-import com.clonecoding.pinterest.domain.pin.entity.Comment;
+import com.clonecoding.pinterest.domain.comment.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
