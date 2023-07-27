@@ -11,6 +11,7 @@ import com.clonecoding.pinterest.global.security.filter.UserDetailsImpl;
 import com.clonecoding.pinterest.global.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j(topic = "UserController")
 @RequestMapping("/api/user")
+@Tag(name = "🍫유저 API", description = "로그인, 회원가입")
 public class UserController {
     @NonNull
     private UserService userService;
